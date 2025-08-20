@@ -95,5 +95,3 @@ def delete_account():
             flash("Incorrect password", "danger")
             return redirect(url_for("auth.delete_account"))
     return render_template("delete_account.html")
-
-

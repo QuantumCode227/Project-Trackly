@@ -16,15 +16,25 @@ def dashboard():
     user = current_user
     user_id = user.id
 
-    total_income = db.session.query(func.sum(Income.amount))\
-        .filter_by(user_id=user_id).scalar() or 0
-    
-    total_expense = db.session.query(func.sum(Expense.amount))\
-        .filter_by(user_id=user_id).scalar() or 0
-    
+    total_income = (
+        db.session.query(func.sum(Income.amount)).filter_by(user_id=user_id).scalar()
+        or 0
+    )
+
+    total_expense = (
+        db.session.query(func.sum(Expense.amount)).filter_by(user_id=user_id).scalar()
+        or 0
+    )
+
     balance = total_income - total_expense
 
-    return render_template("dashboard.html", total_income=total_income, total_expense=total_expense, balance=balance, user=user)
+    return render_template(
+        "dashboard.html",
+        total_income=total_income,
+        total_expense=total_expense,
+        balance=balance,
+        user=user,
+    )
 
 
 # Add income logic
@@ -84,23 +94,23 @@ def update_income(income_id):
         if not amount or not note or not date_str:
             flash("All fields are required.", "danger")
             return redirect(url_for("dashboard.update_income", income_id=income_id))
-        
+
         try:
             date = datetime.strptime(date_str, "%Y-%m-%dT%H:%M")
         except ValueError:
             flash("Invalid date format.", "danger")
             return redirect(url_for("dashboard.update_income", income_id=income_id))
-        
-        # Update 
+
+        # Update
         income.amount = int(amount)
         income.note = note
         income.date = date
-        
+
         # Final commit
         db.session.commit()
         flash("Income updated successfully!", "success")
         return redirect(url_for("dashboard.income_history"))
-    
+
     return render_template("update_income.html", income=income)
 
 
@@ -113,7 +123,7 @@ def delete_income(income_id):
     if income.user_id != current_user.id:
         flash("You are not authorized to delete this income.", "danger")
         return redirect(url_for("dashboard.income_history"))
-    
+
     db.session.delete(income)
     db.session.commit()
     flash("Income deleted successfully!", "success")
@@ -125,7 +135,9 @@ def delete_income(income_id):
 @login_required
 def income_history():
     incomes = (
-        Income.query.filter_by(user_id=current_user.id).order_by(Income.date.desc()).all()
+        Income.query.filter_by(user_id=current_user.id)
+        .order_by(Income.date.desc())
+        .all()
     )
 
     return render_template("income_history.html", incomes=incomes)
@@ -163,7 +175,7 @@ def add_expense():
         add_expense = Expense(
             user_id=user_id, item=item, category=category, amount=int(amount), date=date
         )
-        
+
         db.session.add(add_expense)
         db.session.commit()
         flash("Expense added successfully!", "success")
@@ -182,7 +194,7 @@ def update_expense(expense_id):
     if expense.user_id != current_user.id:
         flash("You are not authorized to update this expense.", "danger")
         return redirect(url_for("dashboard.expense_history"))
-    
+
     if request.method == "POST":
         item = request.form.get("item")
         category = request.form.get("category")
@@ -197,8 +209,8 @@ def update_expense(expense_id):
         except ValueError:
             flash("Invalid date format.", "danger")
             return redirect(url_for("dashboard.update_expense", expense_id=expense_id))
-        
-        # Update 
+
+        # Update
         expense.item = item
         expense.category = category
         expense.amount = amount
@@ -208,20 +220,19 @@ def update_expense(expense_id):
         db.session.commit()
         flash("Expense updated successfully!", "success")
         return redirect(url_for("dashboard.expense_history"))
-    
+
     return render_template("update_expense.html", expense=expense)
 
 
 # Delete expense logic
 @dashboard_bp.route("/delete_expense/<int:expense_id>", methods=["POST"])
 @login_required
-def delete_expense(expense_id): 
+def delete_expense(expense_id):
     expense = Expense.query.get_or_404(expense_id)
-
     if expense.user_id != current_user.id:
         flash("You are not authorized to delete this expense.", "danger")
         return redirect(url_for("dashboard.expense_history"))
-    
+
     db.session.delete(expense)
     db.session.commit()
     flash("Expense deleted successfully!", "success")
@@ -233,8 +244,9 @@ def delete_expense(expense_id):
 @login_required
 def expense_history():
     expenses = (
-        Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).all()
+        Expense.query.filter_by(user_id=current_user.id)
+        .order_by(Expense.date.desc())
+        .all()
     )
 
     return render_template("expense_history.html", expenses=expenses)
-

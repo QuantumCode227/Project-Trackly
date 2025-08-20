@@ -25,18 +25,22 @@
           <td data-label="Amount">Rs.{{ expense.amount | round(2) }}</td>
           <td data-label="Time of Purchase">{{ expense.date.strftime("%d-%b-%Y %I:%M %p") }}</td>
           <td data-label="Actions">
-            <button class="edit-btn"><a
-                href="{{ url_for('dashboard.update_expense', expense_id=expense.id) }}">Edit</a></button>
-            <button class="delete-btn"><a
-                href="{{ url_for('dashboard.delete_expense', expense_id=expense.id) }}">Delete</a></button>
+            <a href="{{ url_for('dashboard.update_expense', expense_id=expense.id) }}" class="edit-btn">Edit</a>
+
+            <!-- Delete form -->
+            <form method="POST" action="{{ url_for('dashboard.delete_expense', expense_id=expense.id) }}"
+              class="delete-form" style="display:inline;">
+              <button type="button" class="delete-btn">Delete</button>
+            </form>
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
     {% else %}
-    <p class="no-data-message">No expense history found. Start by <a
-        href="{{ url_for('dashboard.add_expense') }}">adding one!</a></p>
+    <p class="no-data-message">No expense history found. Start by
+      <a href="{{ url_for('dashboard.add_expense') }}">adding one!</a>
+    </p>
     {% endif %}
   </div>
 </div>
@@ -52,8 +56,8 @@
     </div>
   </div>
 </div>
-
 {% endblock %}
+
 {% block script %}
 {{ super() }}
 <script>
@@ -61,33 +65,33 @@
     const modal = document.getElementById("confirmModal");
     const confirmBtn = document.getElementById("confirmDelete");
     const cancelBtn = document.getElementById("cancelDelete");
-    let targetLink = null;
+    let targetForm = null;
 
-    const deleteButtons = document.querySelectorAll(".delete-btn a");
+    const deleteButtons = document.querySelectorAll(".delete-btn");
 
     deleteButtons.forEach(btn => {
       btn.addEventListener("click", function (e) {
         e.preventDefault();
-        targetLink = this.href;
+        targetForm = this.closest("form"); // jis form ka button click hua
         modal.style.display = "flex";
       });
     });
 
     cancelBtn.addEventListener("click", function () {
       modal.style.display = "none";
-      targetLink = null;
+      targetForm = null;
     });
 
     confirmBtn.addEventListener("click", function () {
-      if (targetLink) {
-        window.location.href = targetLink;
+      if (targetForm) {
+        targetForm.submit(); // ab POST request jayegi
       }
     });
 
     window.addEventListener("click", function (e) {
       if (e.target === modal) {
         modal.style.display = "none";
-        targetLink = null;
+        targetForm = null;
       }
     });
   });
