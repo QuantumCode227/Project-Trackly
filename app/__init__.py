@@ -1,8 +1,8 @@
 from sqlite3 import Connection as SQLite3Connection
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from sqlalchemy.engine import Engine
+from flask_migrate import Migrate
 from dotenv import load_dotenv
 from sqlalchemy import event
 from flask import Flask
@@ -10,6 +10,7 @@ import cloudinary
 import os
 
 db = SQLAlchemy()
+migrate = Migrate()
 login_manager = LoginManager()
 load_dotenv()
 
@@ -28,16 +29,17 @@ cloudinary.config(
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
 )
 
+class Config:
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 
 def create_app():
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "fallback_secret")
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
-        "DATABASE_URL", "sqlite:///tracker.db"
-    )
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    
+    app.config.from_object(Config)
+
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.login_message_category = "info"
