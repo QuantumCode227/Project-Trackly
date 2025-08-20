@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% set page_id = "update_expense" %}
+{% block title %}Update Expense — Trackely{% endblock %}
+{% block content %}
+<div class="update-expense-container">
+  <h1 class="update-expense-title">Update Expense</h1>
+
+  <div class="update-expense-form-card">
+    <form action="#" method="POST" class="update-expense-form">
+      <!-- Add a CSRF token for security if you're using a framework like Flask or Django -->
+      <!-- Add a hidden input for the expense ID to know which item to update -->
+      <input type="hidden" name="expense_id" value="{{ expense.id }}">
+
+      <div class="form-group">
+        <label for="item-name" class="form-label">Item Name</label>
+        <input type="text" id="item-name" name="item" class="form-control" value="{{ expense.item }}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="amount" class="form-label">Amount</label>
+        <input type="number" id="amount" name="amount" class="form-control" step="0.01" value="{{ expense.amount }}"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="purchase-date" class="form-label">Date</label>
+        <input type="datetime-local" id="purchase-date" name="date" class="form-control" value="{{ expense.date }}"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="category" class="form-label">Category</label>
+        <select id="category" name="category" class="form-control" required>
+          <option value="" disabled>Select a category</option>
+          <!-- Pre-select the current category using Jinja -->
+          <option value="Food & Groceries" {% if expense.category=='Food & Groceries' %}selected{% endif %}>Food &
+            Groceries</option>
+
+          <option value="Transportation" {% if expense.category=='Transportation' %}selected{% endif %}>Transportation
+          </option>
+
+          <option value="Housing & Utilities" {% if expense.category=='Housing & Utilities' %}selected{% endif %}>
+            Housing & Utilities
+          </option>
+
+          <option value="Personal & Health" {% if expense.category=='Personal & Health' %}selected{% endif %}>Personal & Health
+          </option>
+
+          <option value="Entertainment & Leisure" {% if expense.category=='Entertainment & Leisure' %}selected{% endif %}>Entertainment & Leisure
+          </option>
+
+          <option value="Education & Work" {% if expense.category=='Education & Work' %}selected{% endif %}>Education & Work
+          </option>
+
+          <option value="Others" {% if expense.category=='Others' %}selected{% endif %}>Others</option>
+        </select>
+      </div>
+
+      <div class="form-group form-actions">
+        <button type="submit" class="update-expense-btn">Update Expense</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

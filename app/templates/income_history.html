@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% set page_id = "income_history" %}
+{% block title %}Income History — Trackly{% endblock %}
+{% block content %}
+<div class="history-container">
+  <h1 class="history-title">Income History</h1>
+
+  <div class="history-table-container">
+    {% if incomes %}
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>S.No.</th>
+          <th>Amount (PKR)</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for income in incomes %}
+        <tr>
+          <td data-label="S.No.">{{ loop.index }}</td>
+          <td data-label="Amount">Rs.{{ income.amount | round(2) }}</td>
+          <td data-label="Time of Purchase">{{ income.date.strftime("%d-%b-%Y %I:%M %p") }}</td>
+          <td data-label="Actions">
+            <button class="edit-btn"><a
+                href="{{ url_for('dashboard.update_income', income_id=income.id) }}">Edit</a></button>
+            <button class="delete-btn"><a
+                href="{{ url_for('dashboard.delete_income', income_id=income.id) }}">Delete</a></button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="no-data-message">No income history found. Start by <a href="{{ url_for('dashboard.add_income') }}">adding
+        one!</a></p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+    <h2>Are you absolutely sure?</h2>
+    <p>This will permanently remove this income. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button id="confirmDelete" class="danger">Yes, delete</button>
+      <button id="cancelDelete">Cancel</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block script %}
+{{ super() }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("confirmModal");
+    const confirmBtn = document.getElementById("confirmDelete");
+    const cancelBtn = document.getElementById("cancelDelete");
+    let targetLink = null;
+
+    const deleteButtons = document.querySelectorAll(".delete-btn a");
+
+    deleteButtons.forEach(btn => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        targetLink = this.href;
+        modal.style.display = "flex";
+      });
+    });
+
+    cancelBtn.addEventListener("click", function () {
+      modal.style.display = "none";
+      targetLink = null;
+    });
+
+    confirmBtn.addEventListener("click", function () {
+      if (targetLink) {
+        window.location.href = targetLink;
+      }
+    });
+
+    window.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        modal.style.display = "none";
+        targetLink = null;
+      }
+    });
+  });
+</script>
+{% endblock %}

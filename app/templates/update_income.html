@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% set page_id = "update_income" %}
+{% block title %}Update Income — Trackely{% endblock %}
+{% block content %}
+<div class="update-expense-container">
+    <h1 class="update-expense-title">Update Income</h1>
+
+    <div class="update-expense-form-card">
+        <form action="#" method="POST" class="update-expense-form">
+            <!-- Add a CSRF token for security if you're using a framework like Flask or Django -->
+            <!-- Add a hidden input for the expense ID to know which item to update -->
+            <input type="hidden" name="expense_id" value="{{ income.id }}">
+
+            <div class="form-group">
+                <label for="amount" class="form-label">Amount</label>
+                <input type="number" id="amount" name="amount" class="form-control" step="0.01"
+                    value="{{ income.amount }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="purchase-date" class="form-label">Date</label>
+                <input type="datetime-local" id="purchase-date" name="date" class="form-control"
+                    value="{{ income.date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="note" class="form-label">Note</label>
+                <input type="text" id="item-name" name="note" class="form-control"
+                    value="{{ income.note }}" required>
+            </div>
+
+            <div class="form-group form-actions">
+                <button type="submit" class="update-expense-btn">Update Imcome</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% set page_id = "dashboard" %}
+{% block title %}Dashboard — Trackly{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+
+  <!-- Welcome / Summary -->
+  <section class="dashboard-summary">
+    <h1>Welcome, {{ current_user.name if user else 'Guest' }}!</h1>
+    <div class="summary-cards">
+      <div class="card income-card">
+        <h2>Total Income</h2>
+        <p>Rs. {{ total_income }}</p>
+      </div>
+      <div class="card expense-card">
+        <h2>Total Expenses</h2>
+        <p>Rs. {{ total_expense }}</p>
+      </div>
+      <div class="card balance-card">
+        <h2>Balance</h2>
+        <p>Rs. {{balance}} </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

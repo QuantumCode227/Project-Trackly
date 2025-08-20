@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>{% block title %}Trackly{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link href="{{ url_for('static', filename='img/favicon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/aos/aos.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+
+</head>
+
+<body class="index-page {% block body_class %}{% endblock %}">
+    <header id="header" class="header d-flex align-items-center fixed-top">
+
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+            <a href="index.html" class="logo d-flex align-items-center">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Trackly logo">
+                <h1 class="sitename">Trackly</h1>
+            </a>
+
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    {% if current_user.is_authenticated %}
+                    <li>
+                        <a href="{{ url_for('dashboard.dashboard') }}"
+                            class="{% if request.endpoint == 'dashboard.dashboard' %}active{% endif %}">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard.add_expense') }}"
+                            class="{% if request.endpoint == 'dashboard.add_expense' %}active{% endif %}">
+                            Add Expense
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard.expense_history') }}"
+                            class="{% if request.endpoint == 'dashboard.expense_history' %}active{% endif %}">
+                            Expense History
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard.add_income') }}"
+                            class="{% if request.endpoint == 'dashboard.add_income' %}active{% endif %}">
+                            Add Income
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard.income_history') }}"
+                            class="{% if request.endpoint == 'dashboard.income_history' %}active{% endif %}">
+                            Income History
+                        </a>
+                    </li>
+                    <li class="dropdown has-dropdown">
+                        <a href="#" class="toggle-dropdown">
+                            {% if current_user.profile_picture_url %}
+                            <img class="avater" src="{{current_user.profile_picture_url}}" alt="User Account">
+                            {% else %}
+                            <svg fill="#fff" stroke="none" width="28" height="28" viewBox="0 0 28 28"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M17.5 9c0 1.14-.3 1.99-.79 2.54-.46.52-1.27.96-2.71.96s-2.25-.44-2.71-.96A3.74 3.74 0 0 1 10.5 9c0-1.14.3-1.99.79-2.54.46-.52 1.27-.96 2.71-.96s2.25.44 2.71.96c.5.55.79 1.4.79 2.54zM19 9c0 2.76-1.45 5-5 5s-5-2.24-5-5 1.45-5 5-5 5 2.24 5 5zm-8 8.5h6c2.04 0 3.1.5 3.76 1.1.69.63 1.11 1.55 1.5 2.8.13.42.04.95-.29 1.4-.33.46-.8.7-1.22.7H7.25c-.43 0-.89-.24-1.22-.7a1.61 1.61 0 0 1-.3-1.4 6.08 6.08 0 0 1 1.51-2.8c.65-.6 1.72-1.1 3.76-1.1zm6-1.5h-6c-4.6 0-5.88 2.33-6.7 4.96-.58 1.89.97 4.04 2.95 4.04h13.5c1.98 0 3.53-2.15 2.95-4.04C22.88 18.33 21.6 16 17 16z"
+                                    fill="currentColor"></path>
+                            </svg>
+                            {% endif %}
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="{{ url_for('settings.settings') }}"
+                                    class="{% if request.endpoint == 'auth.settings' %}active{% endif %}">
+                                    Settings
+                                </a>
+                            </li>
+                            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
+
+                    {% else %}
+                    <li><a href="{{ url_for('home.home') }}#hero" class="active">Home</a></li>
+                    <li><a href="{{ url_for('home.home') }}#about">About</a></li>
+                    <li><a href="{{ url_for('home.home') }}#services">Features</a></li>
+                    <li><a href="{{ url_for('home.home') }}#featured-services">Why Us?</a></li>
+                    <li><a href="{{ url_for('home.home') }}#contact">Contact</a></li>
+                    <li class="dropdown has-dropdown">
+                        <a href="#" class="toggle-dropdown">
+                            <svg fill="#fff" stroke="none" width="28" height="28" viewBox="0 0 28 28"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M17.5 9c0 1.14-.3 1.99-.79 2.54-.46.52-1.27.96-2.71.96s-2.25-.44-2.71-.96A3.74 3.74 0 0 1 10.5 9c0-1.14.3-1.99.79-2.54.46-.52 1.27-.96 2.71-.96s2.25.44 2.71.96c.5.55.79 1.4.79 2.54zM19 9c0 2.76-1.45 5-5 5s-5-2.24-5-5 1.45-5 5-5 5 2.24 5 5zm-8 8.5h6c2.04 0 3.1.5 3.76 1.1.69.63 1.11 1.55 1.5 2.8.13.42.04.95-.29 1.4-.33.46-.8.7-1.22.7H7.25c-.43 0-.89-.24-1.22-.7a1.61 1.61 0 0 1-.3-1.4 6.08 6.08 0 0 1 1.51-2.8c.65-.6 1.72-1.1 3.76-1.1zm6-1.5h-6c-4.6 0-5.88 2.33-6.7 4.96-.58 1.89.97 4.04 2.95 4.04h13.5c1.98 0 3.53-2.15 2.95-4.04C22.88 18.33 21.6 16 17 16z"
+                                    fill="currentColor"></path>
+                            </svg>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="{{ url_for('auth.login') }}"
+                                    class="{% if request.endpoint == 'auth.login' %}active{% endif %}">
+                                    Login
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('auth.register') }}"
+                                    class="{% if request.endpoint == 'auth.register' %}active{% endif %}">
+                                    Signup
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    {% endif %}
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="position-fixed top-0 start-50 translate-middle-x"
+        style="z-index: 1050; max-width: 500px; margin-top: 14vh;">
+        <div class="alert alert-{{ category }} alert-dismissible fade show text-center" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <main class="main">
+
+        {% block content %}
+        <!-- Main content  -->
+        {% endblock %}
+
+    </main>
+
+    <footer id="footer" class="footer dark-background">
+
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6 footer-about">
+                    <a href="{{url_for('home.home')}}" class="logo d-flex align-items-center">
+                        <span class="sitename">Trackly</span>
+                    </a>
+                    <div class="footer-contact pt-3">
+                        <p>A108 ABC Street</p>
+                        <p>New York, NY 535022</p>
+                        <p class="mt-3"><strong>Phone:</strong> <span>+92 000 0000000</span></p>
+                        <p><strong>Email:</strong> <span>info@example.com</span></p>
+                    </div>
+                    <div class="social-links d-flex mt-4">
+                        <a href=""><i class="bi bi-twitter-x"></i></a>
+                        <a href=""><i class="bi bi-facebook"></i></a>
+                        <a href=""><i class="bi bi-instagram"></i></a>
+                        <a href=""><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-3 footer-links">
+                    <h4>Useful Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Terms of service</a></li>
+                        <li><a href="#">Privacy policy</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-3 footer-links">
+                    <h4>Our Services</h4>
+                    <ul>
+                        <li><a href="#">Web Design</a></li>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">Product Management</a></li>
+                        <li><a href="#">Marketing</a></li>
+                        <li><a href="#">Graphic Design</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">Trackly</strong> <span>All Rights Reserved</span>
+            </p>
+            <div class="credits">
+                Designed by <a href="https://www.instagram.com/itx_.awaix?igsh=dGthYzZncWsxbWI4">Awais Abbasi</a>
+            </div>
+        </div>
+
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/aos/aos.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/swiper/swiper-bundle.min.js') }}"></script>
+
+    <!-- Main JS File -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    {% block script %}{% endblock %}
+</body>
+
+</html>

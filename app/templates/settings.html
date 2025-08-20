@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% set page_id = "settings" %}
+{% block title %}Account Settings — Trackly{% endblock %}
+{% block content %}
+<div class="settings-container">
+  <!-- Sidebar -->
+  <aside class="settings-sidebar">
+    <h2 style="color: white;">Account Settings</h2>
+    <ul>
+      <li><a href="#profile" class="active">Profile</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#account">Account</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="settings-content">
+
+    <!-- Profile -->
+    <section id="profile" class="settings-section profile_section">
+      <h3>Profile Settings</h3>
+
+      <!-- Profile Update Form -->
+      <form action="{{ url_for('settings.update_profile') }}" method="POST" enctype="multipart/form-data"
+        class="profile-form">
+        <div class="profile-inputs">
+          <div class="input-fields">
+            <label>Full Name</label>
+            <input type="text" name="name" value="{{ user.name }}">
+
+            <label>Email</label>
+            <input type="email" name="email" value="{{ user.email }}">
+
+            <label>Country</label>
+            <select name="country">
+              {% for country in country_timezone_map.keys() %}
+              <option value="{{ country }}" {% if user.country==country %}selected{% endif %}>{{ country }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Profile Picture -->
+          <div class="profile-picture">
+            {% if current_user.profile_picture_url %}
+            <img class="setting_avater" src="{{ current_user.profile_picture_url }}" alt="User Account">
+            {% else %}
+            <img class="setting_avater" src="{{ url_for('static', filename='img/user_avater.png') }}" alt="User Account">
+            {% endif %}
+          </div>
+        </div>
+
+        <button type="submit" class="save-btn">Save Changes</button>
+      </form>
+
+      <div class="profile-dropdown">
+        <div class="profile-dropdown-btn">
+          <a href="#">Edit</a>
+          <div class="profile-dropdown-menu">
+
+            <!-- Upload photo -->
+            <form action="{{ url_for('settings.upload_profile_picture') }}" method="POST" enctype="multipart/form-data">
+              <button onclick="document.getElementById('fileInput').click()" type="button"
+                class="btn btn-success">Upload a photo</button>
+              <input type="file" id="fileInput" name="profile_picture" style="display: none;"
+                onchange="document.getElementById('auto_submit_pfp').click()">
+              <button type="submit" id="auto_submit_pfp" style="display: none;"></button>
+            </form>
+
+            <!-- Remove photo -->
+            <form action="{{ url_for('settings.remove_profile_picture') }}" method="POST">
+              <button type="submit" class="btn btn-danger">Remove photo</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security -->
+    <section id="security" class="settings-section">
+      <h3>Security Settings</h3>
+      <form action="{{ url_for('settings.update_password') }}" method="POST">
+        <label>Current Password</label>
+        <input type="password" name="current_password">
+
+        <label>New Password</label>
+        <input type="password" name="new_password">
+
+        <label>Confirm New Password</label>
+        <input type="password" name="confirm_password">
+
+        <button type="submit" class="save-btn">Update Password</button>
+      </form>
+    </section>
+
+    <!-- Account -->
+    <section id="account" class="settings-section">
+      <h3>Account Management</h3>
+      <form action="#" method="GET" style="display:inline;">
+        <button type="submit" class="account-deactivate-btn">Deactivate Account</button>
+      </form>
+      <form action="{{ url_for('auth.delete_account') }}" method="GET" style="display:inline;">
+        <button type="submit" class="account-delete-btn">Delete Account</button>
+      </form>
+    </section>
+
+  </main>
+</div>
+{% endblock %}

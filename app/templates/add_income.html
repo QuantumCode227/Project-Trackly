@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% set page_id = "add_income" %}
+{% block title %}Add Income — Trackly{% endblock %}
+{% block content %}
+<div class="add-expense-container">
+  <h1 class="add-expense-title">Add Income</h1>
+
+  <div class="add-expense-form-card">
+    <form action="{{ url_for('dashboard.add_income') }}" method="POST" class="add-expense-form">
+      <!-- Add a CSRF token for security  -->
+
+      <div class="form-group">
+        <label for="amount" class="form-label">Amount</label>
+        <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label for="purchase-date" class="form-label">Date</label>
+        <input type="datetime-local" id="purchase-date" name="date" class="form-control" value="{{ current_datetime }}"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="note" class="form-label">Note</label>
+        <input type="text" id="item-name" name="note" class="form-control"
+          required>
+      </div>
+
+      <div class="form-group form-actions">
+        <button type="submit" class="add-expense-btn">Add Income</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

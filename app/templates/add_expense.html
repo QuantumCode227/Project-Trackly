@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% set page_id = "add_expense" %}
+{% block title %}Add Expense — Trackly{% endblock %}
+{% block content %}
+<div class="add-expense-container">
+  <h1 class="add-expense-title">Add New Expense</h1>
+
+  <div class="add-expense-form-card">
+    <form action="{{ url_for('dashboard.add_expense') }}" method="POST" class="add-expense-form">
+      <!-- Add a CSRF token for security -->
+
+      <div class="form-group">
+        <label for="item-name" class="form-label">Item Name</label>
+        <input type="text" id="item-name" name="item" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="amount" class="form-label">Amount</label>
+        <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label for="purchase-date" class="form-label">Date</label>
+        <input type="datetime-local" id="purchase-date" name="date" class="form-control" value="{{ current_datetime }}"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="category" class="form-label">Category</label>
+        <select id="category" name="category" class="form-control" required>
+          <option value="" disabled selected>Select a category</option>
+          <option value="Food & Groceries">Food & Groceries</option>
+          <option value="Transportation">Transportation</option>
+          <option value="Housing & Utilities">Housing & Utilities</option>
+          <option value="Personal & Health">Personal & Health</option>
+          <option value="Entertainment & Leisure">Entertainment & Leisure</option>
+          <option value="Education & Work">Education & Work</option>
+          <option value="Others">Others</option>
+        </select>
+      </div>
+
+      <div class="form-group form-actions">
+        <button type="submit" class="add-expense-btn">Add Expense</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

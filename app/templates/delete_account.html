@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% set page_id = "delete_account" %}
+{% block title %}Delete Account — Trackly{% endblock %}
+{% block content %}
+<div class="container delete-account-page">
+  <h1>Delete Account</h1>
+  <p class="warning">
+    ⚠️ This action will permanently delete your account and all associated data. This cannot be undone.
+  </p>
+
+  <ul class="consequences">
+    <li>Your profile and settings will be erased.</li>
+    <li>All your saved data will be removed.</li>
+    <li>You will lose access to purchased content.</li>
+  </ul>
+
+  <form id="deleteForm" method="POST" action="{{ url_for('auth.delete_account') }}">
+    <label for="password">Enter your Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <label for="confirmText">Type DELETE to confirm:</label>
+    <input type="text" id="confirmText" name="confirmText" placeholder="DELETE" required>
+
+    <button type="button" id="deleteBtn" disabled>Delete My Account</button>
+    <a href="{{ url_for('settings.settings') }}" class="cancel-link">Cancel</a>
+  </form>
+</div>
+
+<!-- Modal -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+    <h2>Are you absolutely sure?</h2>
+    <p>This will permanently remove your account and data. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button id="confirmDelete" class="danger">Yes, delete</button>
+      <button id="cancelDelete">Cancel</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block script %}
+{{ super() }}
+<script>
+  const confirmTextInput = document.getElementById("confirmText");
+  const deleteBtn = document.getElementById("deleteBtn");
+  const modal = document.getElementById("confirmModal");
+
+  confirmTextInput.addEventListener("input", () => {
+    deleteBtn.disabled = confirmTextInput.value.trim().toUpperCase() !== "DELETE";
+  });
+
+  deleteBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+  });
+
+  document.getElementById("cancelDelete").addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  document.getElementById("confirmDelete").addEventListener("click", () => {
+    document.getElementById("deleteForm").submit();
+  });
+</script>
+{% endblock %}
